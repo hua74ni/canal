@@ -57,12 +57,15 @@ public class CanalServerWithNetty extends AbstractCanalLifeCycle implements Cana
         super.start();
 
         /**
-         * 优先启动 CanalServerWithEmbedded
+         * 1.优先启动 CanalServerWithEmbedded
          */
         if (!embeddedServer.isStart()) {
             embeddedServer.start();
         }
 
+        /**
+         * 2. 创建bootstrap实例
+         */
         this.bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
             Executors.newCachedThreadPool()));
         /*
@@ -77,25 +80,30 @@ public class CanalServerWithNetty extends AbstractCanalLifeCycle implements Cana
          */
         bootstrap.setOption("child.tcpNoDelay", true);
 
-        // 构造对应的pipeline
+        /**
+         * 3.构造对应的pipeline
+         */
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 
             public ChannelPipeline getPipeline() throws Exception {
                 ChannelPipeline pipelines = Channels.pipeline();
+                // 主要处理编码、解码，解析网络传入的二进制流
                 pipelines.addLast(FixedHeaderFrameDecoder.class.getName(), new FixedHeaderFrameDecoder());
                 // support to maintain child socket channel.
                 pipelines.addLast(HandshakeInitializationHandler.class.getName(),
                     new HandshakeInitializationHandler(childGroups));
+                /**
+                 * 创建SessionHandler，真正处理客户端请求，是核心逻辑！
+                 */
                 pipelines.addLast(ClientAuthenticationHandler.class.getName(),
                     new ClientAuthenticationHandler(embeddedServer));
-
                 SessionHandler sessionHandler = new SessionHandler(embeddedServer);
                 pipelines.addLast(SessionHandler.class.getName(), sessionHandler);
                 return pipelines;
             }
         });
 
-        // 启动
+        // 4.启动netty服务器
         if (StringUtils.isNotEmpty(ip)) {
             this.serverChannel = bootstrap.bind(new InetSocketAddress(this.ip, this.port));
         } else {
