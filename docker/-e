@@ -1,0 +1,1 @@
+docker run -d -it -h 192.168.21.103 -e server.port=8089 canal.adminUser=admin canal.adminPasswd=admin --name=canal-admin -p 8089:8089 -m 1024m canal/canal-admin
