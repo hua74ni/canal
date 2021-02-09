@@ -8,22 +8,30 @@ import com.alibaba.otter.canal.server.exception.CanalServerException;
 
 public interface CanalService {
 
+    // 订阅
     void subscribe(ClientIdentity clientIdentity) throws CanalServerException;
 
+    // 取消订阅
     void unsubscribe(ClientIdentity clientIdentity) throws CanalServerException;
 
+    // 批量获取message，并自动ACK
     Message get(ClientIdentity clientIdentity, int batchSize) throws CanalServerException;
 
+    // 在超时时间内，批量获取message，并自动ACK
     Message get(ClientIdentity clientIdentity, int batchSize, Long timeout, TimeUnit unit) throws CanalServerException;
 
+    // 批量获取message，不ACK
     Message getWithoutAck(ClientIdentity clientIdentity, int batchSize) throws CanalServerException;
 
+    // 批量获取message，不ACK
     Message getWithoutAck(ClientIdentity clientIdentity, int batchSize, Long timeout, TimeUnit unit)
                                                                                                     throws CanalServerException;
-
+    // ack某个批次的数据
     void ack(ClientIdentity clientIdentity, long batchId) throws CanalServerException;
 
+    // 回滚所有没有ack的批次数据
     void rollback(ClientIdentity clientIdentity) throws CanalServerException;
 
+    // 回滚某个批次的数据
     void rollback(ClientIdentity clientIdentity, Long batchId) throws CanalServerException;
 }

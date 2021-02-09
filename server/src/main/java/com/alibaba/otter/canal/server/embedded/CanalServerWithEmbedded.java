@@ -51,6 +51,10 @@ import com.google.protobuf.ByteString;
 public class CanalServerWithEmbedded extends AbstractCanalLifeCycle implements CanalServer, CanalService {
 
     private static final Logger        logger  = LoggerFactory.getLogger(CanalServerWithEmbedded.class);
+    /**
+     * key: destination
+     * value:  具体的CanalInstance
+     */
     private Map<String, CanalInstance> canalInstances;
     // private Map<ClientIdentity, Position> lastRollbackPostions;
     private CanalInstanceGenerator     canalInstanceGenerator;
