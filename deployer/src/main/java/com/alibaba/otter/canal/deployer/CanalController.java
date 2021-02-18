@@ -164,6 +164,9 @@ public class CanalController {
             zkclientx.createPersistent(ZookeeperPathUtils.CANAL_CLUSTER_ROOT_NODE, true);
         }
 
+        /**
+         * 初始化ServerRunningMonitors，作为instance 运行节点控制
+         */
         final ServerRunningData serverData = new ServerRunningData(registerIp + ":" + port);
         ServerRunningMonitors.setServerData(serverData);
         ServerRunningMonitors.setRunningMonitors(MigrateMap.makeComputingMap(new Function<String, ServerRunningMonitor>() {
@@ -274,7 +277,7 @@ public class CanalController {
             }
         }));
 
-        // 初始化monitor机制
+        // 初始化monitor机制 -- instanceConfigMonitors（监控instance配置变化然后调用ServerRunningMonitor进行处理）
         autoScan = BooleanUtils.toBoolean(getProperty(properties, CanalConstants.CANAL_AUTO_SCAN));
         if (autoScan) {
             defaultAction = new InstanceAction() {

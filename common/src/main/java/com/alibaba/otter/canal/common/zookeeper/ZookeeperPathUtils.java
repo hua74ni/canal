@@ -112,9 +112,13 @@ public class ZookeeperPathUtils {
 
     /**
      * 针对某个destination的工作的集群列表
+     * /otter/canal/destinations/{0}/cluster
      */
     public static final String DESTINATION_CLUSTER_ROOT                     = DESTINATION_NODE + ZOOKEEPER_SEPARATOR
                                                                               + CLUSTER_NODE;
+    /**
+     * /otter/canal/destinations/{0}/cluster/{1}
+     */
     public static final String DESTINATION_CLUSTER_NODE                     = DESTINATION_CLUSTER_ROOT
                                                                               + ZOOKEEPER_SEPARATOR + "{1}";
 
